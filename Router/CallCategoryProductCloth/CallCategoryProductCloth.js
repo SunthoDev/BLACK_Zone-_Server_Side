@@ -1,9 +1,9 @@
 const express = require('express')
-const { ObjectId, Admin } = require('mongodb')
+const { ObjectId } = require('mongodb')
 
 // AllClothProductCategoryWorkThere
 
-module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, AllCartProductCollection }) => {
+module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, AllCartProductCollection, AllUserOrderCollection }) => {
     let router = express.Router()
 
     // ========================================================================================================
@@ -91,7 +91,6 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
     })
 
 
-
     // ========================================================================================================
     // User (Add to Cart) All Work Bellow
     // =====================================================
@@ -111,7 +110,7 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
         let query = { UserOrderEmail: Cloth.UserOrderEmail }
         let findMyData = await AllCartProductCollection.find(query).toArray()
 
-        let existingUser = findMyData?.find(myCloth => myCloth?.ProductCode === Cloth?.ProductCode )
+        let existingUser = findMyData?.find(myCloth => myCloth?.ProductCode === Cloth?.ProductCode)
         if (existingUser) {
             return res.send({ message: "Already existing to cart" })
         }
@@ -127,6 +126,60 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
         let result = await AllCartProductCollection.deleteOne(query)
         res.send(result)
     })
+
+
+    // ========================================================================================================
+    // User (Order Send) DEtails Save to Database !!
+    // =====================================================
+
+    // Admin (get all) user (order) data 
+    // ========================================
+    router.get("/UserAllOrderDataGet", async (req, res) => {
+        let result = await AllUserOrderCollection.find().toArray()
+        res.send(result)
+    })
+    // My (order single data) get by order Id
+    // ========================================
+    router.get("/FindMyOrderHistory/:OrderId", async (req, res) => {
+        let OrderID = req.params.OrderId
+        let query = { OrderId: OrderID }
+        let result = await AllUserOrderCollection.findOne(query)
+        res.send(result)
+    })
+    // My (order all data) get by user email
+    // ========================================
+    router.get("/MyAllOrderProduct/:email", async (req, res) => {
+        let MyEmail = req.params.email
+        console.log(MyEmail)
+        let query = { OrderEmail: MyEmail }
+        let result = await AllUserOrderCollection.find(query).toArray()
+        res.send(result)
+    })
+    // (Order product) post add to database
+    // ========================================
+    router.post("/UserOrderDataPost", async (req, res) => {
+        let UseOrder = req.body
+        let result = await AllUserOrderCollection.insertOne(UseOrder)
+        res.send(result)
+    })
+    //  User all (cart product delete) after payment request !!
+    // ===========================================================
+    router.delete("/DeleteAllCartProductAfterPayment", async (req, res) => {
+        let AllIds = req.body
+
+        if (AllIds.length === 0) {
+            return res.status(400).send({ message: "No IDs Provided" });
+        }
+
+        // Convert string IDs → MongoDB ObjectId
+        const formattedIds = AllIds.map(id => new ObjectId(id));
+        const query = { _id: { $in: formattedIds } };
+
+        let result = await AllCartProductCollection.deleteMany(query)
+        res.send(result)
+    })
+
+
 
 
 

@@ -42,6 +42,7 @@ async function run() {
         const AllCategoryProductCollection = client.db("BlackZone").collection("AllCategoryProduct")
         const AllClothCategoryCollection = client.db("BlackZone").collection("ClothCategory")
         const AllCartProductCollection = client.db("BlackZone").collection("CartProduct")
+        const AllUserOrderCollection = client.db("BlackZone").collection("UserOrderAll")
 
 
         // ==================================================================
@@ -50,7 +51,7 @@ async function run() {
 
         // All cloth product category connect bellow start
         // =================================================
-        let ProductAll = require("./Router/CallCategoryProductCloth/CallCategoryProductCloth")({AllCategoryProductCollection,AllClothCategoryCollection,AllCartProductCollection})
+        let ProductAll = require("./Router/CallCategoryProductCloth/CallCategoryProductCloth")({AllCategoryProductCollection,AllClothCategoryCollection,AllCartProductCollection,AllUserOrderCollection})
         app.use("/AllClothProductCategoryWorkThere", ProductAll)
 
 
