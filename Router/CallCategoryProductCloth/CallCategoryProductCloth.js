@@ -129,7 +129,7 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
 
 
     // ========================================================================================================
-    // User (Order Send) DEtails Save to Database !!
+    // User (Order Send) Details Save to Database !!
     // =====================================================
 
     // Admin (get all) user (order) data 
@@ -150,19 +150,39 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
     // ========================================
     router.get("/MyAllOrderProduct/:email", async (req, res) => {
         let MyEmail = req.params.email
-        console.log(MyEmail)
         let query = { OrderEmail: MyEmail }
         let result = await AllUserOrderCollection.find(query).toArray()
         res.send(result)
     })
-    // (Order product) post add to database
+    // User (Order product) post add to database
     // ========================================
     router.post("/UserOrderDataPost", async (req, res) => {
         let UseOrder = req.body
         let result = await AllUserOrderCollection.insertOne(UseOrder)
         res.send(result)
     })
-    //  User all (cart product delete) after payment request !!
+    // Admin Update Product status (Delivered) 
+    // ============================================
+    router.patch("/OrderProductApproved/:id", async (req, res) => {
+        let upId = req.params.id
+        let filter = { _id: new ObjectId(upId) }
+        let update = {
+            $set: {
+                Status: "Delivered"
+            }
+        }
+        let result = await AllUserOrderCollection.updateOne(filter, update)
+        res.send(result)
+    })
+    //  Admin can delete order product 
+    // ==========================================
+    router.delete("/AdminDeleteProduct/:id", async (req, res) => {
+        let delId = req.params.id
+        let query = { _id: new ObjectId(delId) }
+        let result = await AllUserOrderCollection.deleteOne(query)
+        res.send(result)
+    })
+    // User all (cart product delete) after payment request !!
     // ===========================================================
     router.delete("/DeleteAllCartProductAfterPayment", async (req, res) => {
         let AllIds = req.body
