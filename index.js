@@ -3,7 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
 // ============================================
 // Middleware
@@ -83,11 +83,40 @@ async function run() {
             let result = await userCollection.findOne(query)
             res.send(result)
         })
-
-
-
-       
-
+        // Admin Update User Role Admin 
+        // ==================================================
+        app.patch("/AdminUpdateRoleAdmin/:id", async (req, res) => {
+            let upId = req.params.id
+            let filter = { _id: new ObjectId(upId) }
+            let updateAdmin = {
+                $set: {
+                    role: "admin"
+                }
+            }
+            let result = await userCollection.updateOne(filter, updateAdmin)
+            res.send(result)
+        })
+        // Admin Update User Role User 
+        // ==================================================
+        app.patch("/AdminUpdateRoleUser/:id", async (req, res) => {
+            let upId = req.params.id
+            let filter = { _id: new ObjectId(upId) }
+            let updateAdmin = {
+                $set: {
+                    role: "user"
+                }
+            }
+            let result = await userCollection.updateOne(filter, updateAdmin)
+            res.send(result)
+        })
+        // Admin Delete User 
+        // ==================================================
+        app.delete("/AdminDeleteUsers/:id", async (req, res) => {
+            let upId = req.params.id
+            let query = { _id: new ObjectId(upId) }
+            let result = await userCollection.deleteOne(query)
+            res.send(result)
+        })
 
 
         // ==================================================================

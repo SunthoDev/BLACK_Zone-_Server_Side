@@ -16,12 +16,20 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
         let result = await AllCategoryProductCollection.find().toArray()
         res.send(result)
     })
-    // Product details get by product id 
+    // Product details get by (product id)
     // ========================================
     router.get("/ProductDetails/:id", async (req, res) => {
         let id = req.params.id
         let query = { _id: new ObjectId(id) }
         let result = await AllCategoryProductCollection.findOne(query)
+        res.send(result)
+    })
+    // Product details get by (product Category Name)
+    // ================================================
+    router.get("/ProductCategoryAllDataGet/:categoryName", async (req, res) => {
+        let CategoryName = req.params.categoryName
+        let query = { Category: CategoryName}
+        let result = await AllCategoryProductCollection.find(query).toArray()
         res.send(result)
     })
     // Admin Add Cloth Product Dashboard 
@@ -56,7 +64,6 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
         let result = await AllCategoryProductCollection.deleteOne(query)
         res.send(result)
     })
-
 
 
     // ========================================================================================================
