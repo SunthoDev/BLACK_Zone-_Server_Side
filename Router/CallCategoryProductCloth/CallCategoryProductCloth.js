@@ -101,7 +101,13 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
     // ========================================================================================================
     // User (Add to Cart) All Work Bellow
     // =====================================================
-    // User add to cart all data get
+    // Get all add to cart data
+    // ========================================
+    router.get("/AllCartProduct", async (req, res) => {
+        let result = await AllCartProductCollection.find().toArray()
+        res.send(result)
+    })
+    // User add to cart all data get by (email)
     // ========================================
     router.get("/MyAllCartProduct/:email", async (req, res) => {
         let Email = req.params.email
