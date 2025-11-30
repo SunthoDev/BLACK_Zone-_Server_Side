@@ -28,7 +28,7 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
     // ================================================
     router.get("/ProductCategoryAllDataGet/:categoryName", async (req, res) => {
         let CategoryName = req.params.categoryName
-        let query = { Category: CategoryName}
+        let query = { Category: CategoryName }
         let result = await AllCategoryProductCollection.find(query).toArray()
         res.send(result)
     })
@@ -54,6 +54,24 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
         };
         const options = { upsert: true };
         const result = await AllCategoryProductCollection.updateOne(query, updateDoc, options);
+        res.send(result)
+    })
+    // Admin Update Product Information
+    // ==================================================
+    router.patch("/AdminUpdateProductInformation/:id", async (req, res) => {
+        let upId = req.params.id
+        const Product = req.body;
+        let filter = { _id: new ObjectId(upId) }
+        let updateProduct = {
+            $set: {
+                ProductName: Product?.UpProductName,
+                BrandName: Product?.UpBrandName,
+                Price: Product?.UpPrice,
+                DiscountPrice: Product?.UpDiscountPrice,
+                Description: Product?.finalDescription
+            }
+        }
+        let result = await AllCategoryProductCollection.updateOne(filter, updateProduct)
         res.send(result)
     })
     //  Admin Delete cloth  Product Information 
