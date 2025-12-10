@@ -58,20 +58,32 @@ module.exports = ({ AllCategoryProductCollection, AllClothCategoryCollection, Al
     })
     // Admin Update Product Information
     // ==================================================
-    router.patch("/AdminUpdateProductInformation/:id", async (req, res) => {
+    router.put("/AdminUpdateProductInformation/:id", async (req, res) => {
         let upId = req.params.id
         const Product = req.body;
         let filter = { _id: new ObjectId(upId) }
+        let options = { upsert: true }
         let updateProduct = {
             $set: {
                 ProductName: Product?.UpProductName,
                 BrandName: Product?.UpBrandName,
                 Price: Product?.UpPrice,
                 DiscountPrice: Product?.UpDiscountPrice,
-                Description: Product?.finalDescription
+                SoldOutStatus: Product?.UpSoldOutStatus,
+                Description: Product?.finalDescription,
             }
         }
-        let result = await AllCategoryProductCollection.updateOne(filter, updateProduct)
+        // ⭐ Condition: Only update AllSize if new list is not empty
+        if (Product?.AllSize && Product.AllSize.length > 0) {
+            updateProduct.$set.AllSize = Product.AllSize;
+        }
+        // ⭐ Condition: Only update AllColor if new list is not empty
+        if (Product?.AllColor && Product.AllColor.length > 0) {
+            updateProduct.$set.AllColor = Product.AllColor;
+        }
+
+
+        let result = await AllCategoryProductCollection.updateOne(filter, updateProduct, options)
         res.send(result)
     })
     //  Admin Delete cloth  Product Information 

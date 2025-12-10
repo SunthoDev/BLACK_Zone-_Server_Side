@@ -43,6 +43,7 @@ async function run() {
         const AllClothCategoryCollection = client.db("BlackZone").collection("ClothCategory")
         const AllCartProductCollection = client.db("BlackZone").collection("CartProduct")
         const AllUserOrderCollection = client.db("BlackZone").collection("UserOrderAll")
+        const AllBannerCollection = client.db("BlackZone").collection("WebsiteBanner")
 
 
         // ==================================================================
@@ -51,8 +52,13 @@ async function run() {
 
         // All cloth product category connect bellow start
         // =================================================
-        let ProductAll = require("./Router/CallCategoryProductCloth/CallCategoryProductCloth")({AllCategoryProductCollection,AllClothCategoryCollection,AllCartProductCollection,AllUserOrderCollection})
+        let ProductAll = require("./Router/CallCategoryProductCloth/CallCategoryProductCloth")({ AllCategoryProductCollection, AllClothCategoryCollection, AllCartProductCollection, AllUserOrderCollection })
         app.use("/AllClothProductCategoryWorkThere", ProductAll)
+
+        // Admin dashboard work all bellow this route
+        // =================================================
+        let AdminDashboardWork = require("./Router/AdminDashboardWorkAll/AdminDashboardWorkAll")({ AllBannerCollection })
+        app.use("/AdminDashboardWorkAllRoute", AdminDashboardWork)
 
 
 
